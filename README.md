@@ -33,21 +33,40 @@
 15. Run the program on the S32K144 board.
 
 ---
+## Program
+```
+#include "sdk_project_config.h"
+int main(void) {
+    CLOCK_DRV_Init(&clockMan1_InitConfig0);
+    PINS_DRV_Init(NUM_OF_CONFIGURED_PINS0, g_pin_mux_InitConfigArr0);
+    PWM_Init(&pwm_pal_1_instance, &pwm_pal_1_configs);
+    PWM_UpdateDuty(&pwm_pal_1_instance, 2U, 0);
+    int duty = 0;
+    int i = 0;
+    int s = 1;
+    while (1) {
+        int a = (PINS_DRV_ReadPins(PTC) & (1 << 12)) ? 1 : 0;
+        if (a == 1 && i == 0) {
+            duty += (250 * s);
+            if (duty >= 1000) {
+                duty = 1000;
+                s = -1;
+            }
+            else if (duty <= 0) {
+                duty = 0;
+                s = 1;
+            }
+            PWM_UpdateDuty(&pwm_pal_1_instance, 2U, duty);
+            OSIF_TimeDelay(50);
+        }
+        i = a;
+        OSIF_TimeDelay(10);
+    }
+}
+
+```
 ## OUTPUT
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<img width="1648" height="1027" alt="image" src="https://github.com/user-attachments/assets/1dc8e1ec-2f15-4a34-bbd3-ac482ecfc027" />
 
 
 
